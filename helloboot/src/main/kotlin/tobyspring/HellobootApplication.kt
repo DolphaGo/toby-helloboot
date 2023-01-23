@@ -5,6 +5,9 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 import org.springframework.boot.web.servlet.ServletContextInitializer
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 
 class HellobootApplication
 
@@ -21,9 +24,11 @@ fun main(args: Array<String>) {
             "hello",
             object : HttpServlet() {
                 override fun service(req: HttpServletRequest?, resp: HttpServletResponse?) {
-                    resp?.status = 200
-                    resp?.setHeader("Content-Type", "text/plain")
-                    resp?.writer?.println("Hello Servlet")
+                    val name = req?.getParameter("name")
+
+                    resp?.status = HttpStatus.OK.value()
+                    resp?.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) // String 을 하드코딩하면 오타의 위험성이 있긴 하다.
+                    resp?.writer?.println("Hello $name")
                 }
             }
         ).addMapping("/hello") // 해당 매핑으로 요청이 오면 service가 동작한다.
@@ -35,10 +40,10 @@ fun main(args: Array<String>) {
 /**
  * 위 서버를 실행하면, 서블릿 컨테이너가 띄워지고, 서블릿을 직접 등록해서 동작시킬 수 있다.
  * 결과는 다음과 같다.
-*/
+ */
 
-//http -v ":8080/hello"
-//GET /hello HTTP/1.1
+//✗ http -v ":8080/hello?name=DolphaGo"
+//GET /hello?name=DolphaGo HTTP/1.1
 //Accept: */*
 //Accept-Encoding: gzip, deflate
 //Connection: keep-alive
@@ -49,9 +54,9 @@ fun main(args: Array<String>) {
 //
 //HTTP/1.1 200
 //Connection: keep-alive
-//Content-Length: 14
+//Content-Length: 15
 //Content-Type: text/plain;charset=ISO-8859-1
-//Date: Mon, 23 Jan 2023 16:43:47 GMT
+//Date: Mon, 23 Jan 2023 16:50:54 GMT
 //Keep-Alive: timeout=60
 //
-//Hello Servlet
+//Hello DolphaGo
