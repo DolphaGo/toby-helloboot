@@ -60,3 +60,13 @@ fun main(args: Array<String>) {
 //Keep-Alive: timeout=60
 //
 //Hello DolphaGo
+
+/**
+ * 서블릿은 Request 와 Response 를 둘다 다뤄줘야 함.
+ *
+ * 서블릿은 각 URL에 맞게, 처리하는 방식으로 동작하도록 해야 하는데, 이를 중앙화된 제일 앞단에 컨트롤러를 두자 => FrontController
+ *
+ * 즉, 공통적인 부분은 제일 앞단에서 처리!
+ *
+ * 프론트 컨트롤러를 내장 => 인증/다국어 처리 등에 일반화되어 있음
+ */
