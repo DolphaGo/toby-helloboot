@@ -1,11 +1,18 @@
 package tobyspring
 
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 
-@SpringBootApplication
 class HellobootApplication
 
 fun main(args: Array<String>) {
-    runApplication<HellobootApplication>(*args)
+//    val tomcat = Tomcat()
+//    tomcat.start()
+
+    /**
+     * 톰캣 서블릿 웹서버를 생성하기 위한 스프링부트 도우미 클래스
+     */
+    val serverFactory = TomcatServletWebServerFactory()
+    val webServer = serverFactory.getWebServer()
+    webServer.start()
 }
+
