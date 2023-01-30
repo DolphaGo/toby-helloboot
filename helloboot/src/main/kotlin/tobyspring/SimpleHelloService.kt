@@ -1,8 +1,8 @@
 package tobyspring
 
-class SimpleHelloService {
+class SimpleHelloService : HelloService {
 
-    fun sayHello(name: String) : String {
+    override fun sayHello(name: String) : String {
         return "Hello $name"
     }
 }
