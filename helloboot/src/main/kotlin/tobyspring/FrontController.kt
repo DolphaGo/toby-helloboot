@@ -16,6 +16,8 @@ class FrontController
 fun main(args: Array<String>) {
     val applicationContext = GenericApplicationContext()
     // 스프링 컨테이너는 어떤 클래스의 메타정보를 넣어주는 방식으로 빈을 생성한다.
+    // 스프링 컨테이너는 싱글톤 방식으로 동작하기에 싱글톤 레지스트리라고도 한다.
+    // 동일한 빈을 여러 서블릿 컨테이너에서 사용할 수가 있다.
     applicationContext.registerBean(HelloController::class.java, Supplier { HelloController() })
     applicationContext.refresh() // 컨테이너 초기화
 
