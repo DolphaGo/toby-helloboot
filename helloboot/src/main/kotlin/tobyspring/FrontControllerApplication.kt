@@ -4,25 +4,32 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.ServletContextInitializer
 import org.springframework.web.context.support.GenericWebApplicationContext
 import org.springframework.web.servlet.DispatcherServlet
+import tobyspring.hello.HelloController
+import tobyspring.hello.HelloService
+import tobyspring.hello.SimpleHelloService
 import java.util.function.Supplier
 
-class FrontController
+class FrontControllerApplication
+
 
 fun main(args: Array<String>) {
     val applicationContext = GenericWebApplicationContext()
     // 스프링 컨테이너는 어떤 클래스의 메타정보를 넣어주는 방식으로 빈을 생성한다.
     // 스프링 컨테이너는 싱글톤 방식으로 동작하기에 싱글톤 레지스트리라고도 한다.
     // 동일한 빈을 여러 서블릿 컨테이너에서 사용할 수가 있다.
-    applicationContext.registerBean(HelloService::class.java, Supplier { SimpleHelloService() }) // 인터페이스가 아닌 클래스 타입으로 제공해야 한다.
-    applicationContext.registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
-    applicationContext.refresh() // 컨테이너 초기화
+
+    applicationContext.apply {
+        registerBean(HelloService::class.java, Supplier { SimpleHelloService() })
+        registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
+        refresh()
+    }
+//    applicationContext.registerBean(HelloService::class.java, Supplier { SimpleHelloService() }) // 인터페이스가 아닌 클래스 타입으로 제공해야 한다.
+//    applicationContext.registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
+//    applicationContext.refresh() // 컨테이너 초기화
 
     val serverFactory = TomcatServletWebServerFactory()
     val webServer = serverFactory.getWebServer(ServletContextInitializer {
-        it.addServlet(
-            "dispatcherServlet",
-            DispatcherServlet(applicationContext) // DispatcherServlet은 WebApplicationContext를 이용합니다.
-        ).addMapping("/*") // 모든 요청을 프론트 컨트롤러가 받는다. (중앙 집중화)
+        it.addServlet("dispatcherServlet", DispatcherServlet(applicationContext)).addMapping("/*")
     })
 
     webServer.start()
