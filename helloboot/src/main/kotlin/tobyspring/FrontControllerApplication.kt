@@ -2,20 +2,37 @@ package tobyspring
 
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 import org.springframework.boot.web.servlet.ServletContextInitializer
-import org.springframework.web.context.support.GenericWebApplicationContext
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext
 import org.springframework.web.servlet.DispatcherServlet
 import tobyspring.hello.HelloController
 import tobyspring.hello.HelloService
 import tobyspring.hello.SimpleHelloService
-import java.util.function.Supplier
 
-class FrontControllerApplication
+@Configuration // 구성 정보를 가지고 있는 클래스라는 걸 스프링 컨테이너에게 알려주기 위함이다.
+class FrontControllerApplication {
 
-/**
- * 스프링 컨테이너로 통합
- */
+    @Bean
+    fun helloController(helloService: HelloService): HelloController {
+        return HelloController(helloService)
+    }
+
+    @Bean
+    fun helloService(): HelloService { // 인터페이스 타입으로 리턴할 것
+        return SimpleHelloService()
+    }
+}
+
 fun main(args: Array<String>) {
-    val applicationContext = object : GenericWebApplicationContext() {
+    val applicationContext = object : AnnotationConfigWebApplicationContext() {
+
+        @Suppress("INAPPLICABLE_JVM_NAME") // https://youtrack.jetbrains.com/issue/KT-31420
+        @JvmName(name = "다른이름을 지정해주세요 setClassLoader(classLoader: ClassLoader?)와 JVM signature가 겹쳐요")
+        override fun setClassLoader(classLoader: ClassLoader) {
+
+        }
+
         override fun onRefresh() {
             super.onRefresh()
 
@@ -28,11 +45,35 @@ fun main(args: Array<String>) {
     }
 
     applicationContext.apply {
-        registerBean(HelloService::class.java, Supplier { SimpleHelloService() })
-        registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
+        register(FrontControllerApplication::class.java) // 자바 구성 정보 어플리케이션을 등록해준다.
         refresh() // 템플릿 메서드 패턴을 사용.(일정한 순서에 의해서 작업들 호출 및 서브 클래스를 확장하는 방식). 템플릿 메서드 패턴은 상속을 통해 기능을 확장한 것
     }
 }
+
+
+// class FrontControllerApplication
+///**
+// * 스프링 컨테이너로 통합
+// */
+//fun main(args: Array<String>) {
+//    val applicationContext = object : GenericWebApplicationContext() {
+//        override fun onRefresh() {
+//            super.onRefresh()
+//
+//            val serverFactory = TomcatServletWebServerFactory()
+//            val webServer = serverFactory.getWebServer(ServletContextInitializer {
+//                it.addServlet("dispatcherServlet", DispatcherServlet(this)).addMapping("/*")
+//            })
+//            webServer.start()
+//        }
+//    }
+//
+//    applicationContext.apply {
+//        registerBean(HelloService::class.java, Supplier { SimpleHelloService() })
+//        registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
+//        refresh() // 템플릿 메서드 패턴을 사용.(일정한 순서에 의해서 작업들 호출 및 서브 클래스를 확장하는 방식). 템플릿 메서드 패턴은 상속을 통해 기능을 확장한 것
+//    }
+//}
 
 
 //fun main(args: Array<String>) {
