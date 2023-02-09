@@ -11,29 +11,52 @@ import java.util.function.Supplier
 
 class FrontControllerApplication
 
-
+/**
+ * 스프링 컨테이너로 통합
+ */
 fun main(args: Array<String>) {
-    val applicationContext = GenericWebApplicationContext()
-    // 스프링 컨테이너는 어떤 클래스의 메타정보를 넣어주는 방식으로 빈을 생성한다.
-    // 스프링 컨테이너는 싱글톤 방식으로 동작하기에 싱글톤 레지스트리라고도 한다.
-    // 동일한 빈을 여러 서블릿 컨테이너에서 사용할 수가 있다.
+    val applicationContext = object : GenericWebApplicationContext() {
+        override fun onRefresh() {
+            super.onRefresh()
+
+            val serverFactory = TomcatServletWebServerFactory()
+            val webServer = serverFactory.getWebServer(ServletContextInitializer {
+                it.addServlet("dispatcherServlet", DispatcherServlet(this)).addMapping("/*")
+            })
+            webServer.start()
+        }
+    }
 
     applicationContext.apply {
         registerBean(HelloService::class.java, Supplier { SimpleHelloService() })
         registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
-        refresh()
+        refresh() // 템플릿 메서드 패턴을 사용.(일정한 순서에 의해서 작업들 호출 및 서브 클래스를 확장하는 방식). 템플릿 메서드 패턴은 상속을 통해 기능을 확장한 것
     }
-//    applicationContext.registerBean(HelloService::class.java, Supplier { SimpleHelloService() }) // 인터페이스가 아닌 클래스 타입으로 제공해야 한다.
-//    applicationContext.registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
-//    applicationContext.refresh() // 컨테이너 초기화
-
-    val serverFactory = TomcatServletWebServerFactory()
-    val webServer = serverFactory.getWebServer(ServletContextInitializer {
-        it.addServlet("dispatcherServlet", DispatcherServlet(applicationContext)).addMapping("/*")
-    })
-
-    webServer.start()
 }
+
+
+//fun main(args: Array<String>) {
+//    val applicationContext = GenericWebApplicationContext()
+//    // 스프링 컨테이너는 어떤 클래스의 메타정보를 넣어주는 방식으로 빈을 생성한다.
+//    // 스프링 컨테이너는 싱글톤 방식으로 동작하기에 싱글톤 레지스트리라고도 한다.
+//    // 동일한 빈을 여러 서블릿 컨테이너에서 사용할 수가 있다.
+//
+//    applicationContext.apply {
+//        registerBean(HelloService::class.java, Supplier { SimpleHelloService() })
+//        registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
+//        refresh()
+//    }
+////    applicationContext.registerBean(HelloService::class.java, Supplier { SimpleHelloService() }) // 인터페이스가 아닌 클래스 타입으로 제공해야 한다.
+////    applicationContext.registerBean(HelloController::class.java, Supplier { HelloController(applicationContext.getBean(HelloService::class.java)) })
+////    applicationContext.refresh() // 컨테이너 초기화
+//
+//    val serverFactory = TomcatServletWebServerFactory()
+//    val webServer = serverFactory.getWebServer(ServletContextInitializer {
+//        it.addServlet("dispatcherServlet", DispatcherServlet(applicationContext)).addMapping("/*")
+//    })
+//
+//    webServer.start()
+//}
 
 //fun main(args: Array<String>) {
 //    val applicationContext = GenericApplicationContext()
