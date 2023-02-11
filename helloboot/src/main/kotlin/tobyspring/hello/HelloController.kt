@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RestController
  * 3.0 부터는 클래스 레벨의 핸들러 감지 대상에 @Controller 어노테이션만 포함된다.
  */
 //@RequestMapping("/hello")
-@RestController
+//@RestController
+//@Component
+@RestController // 클래스 레벨에 RequestMapping 이 없어도 이 메타어노테이션으로도 스프링에서 Path를 뒤져준다.(스프링 부트 3.0 이전!)
+//@MyComponent
 class HelloController(
     private val service: HelloService
 ) {

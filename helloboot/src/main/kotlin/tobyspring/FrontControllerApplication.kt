@@ -2,26 +2,25 @@ package tobyspring
 
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 import org.springframework.boot.web.servlet.ServletContextInitializer
-import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext
 import org.springframework.web.servlet.DispatcherServlet
-import tobyspring.hello.HelloController
-import tobyspring.hello.HelloService
-import tobyspring.hello.SimpleHelloService
 
+@ComponentScan // 이 클래스가 있는 패키지부터 시작해서 하위 패키지까지 뒤져서, 컴포넌트 어노테이션이 있는 것을 빈으로 등록한다. 장점: 새로운 빈을 추가할 때, 매번 다시 직접 등록할 필요 없음. 편리함
+// 모든 방식에는 장/단점이 있는데, 단점으로는 나중에 진짜 빈으로 등록되어야 하는 빈이 어디에서 등록되는 지를 찾아보는 것이 번거로울 수가 있다.
 @Configuration // 구성 정보를 가지고 있는 클래스라는 걸 스프링 컨테이너에게 알려주기 위함이다.
 class FrontControllerApplication {
 
-    @Bean
-    fun helloController(helloService: HelloService): HelloController {
-        return HelloController(helloService)
-    }
-
-    @Bean
-    fun helloService(): HelloService { // 인터페이스 타입으로 리턴할 것
-        return SimpleHelloService()
-    }
+//    @Bean
+//    fun helloController(helloService: HelloService): HelloController {
+//        return HelloController(helloService)
+//    }
+//
+//    @Bean
+//    fun helloService(): HelloService { // 인터페이스 타입으로 리턴할 것
+//        return SimpleHelloService()
+//    }
 }
 
 fun main(args: Array<String>) {
