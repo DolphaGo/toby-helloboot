@@ -1,5 +1,7 @@
 package tobyspring.hello
 
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -19,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController
 //@MyComponent
 class HelloController(
     private val service: HelloService
-) {
+) : ApplicationContextAware {
+
+    private lateinit var applicationContext : ApplicationContext
 
     // Method Level : GET (요청 방법) + PATH
     @GetMapping("/hello")
@@ -27,5 +31,10 @@ class HelloController(
 //    @RequestMapping(value = ["/hello"], method = [RequestMethod.GET])
     fun hello(name: String): String {
         return service.sayHello(name)
+    }
+
+    override fun setApplicationContext(applicationContext: ApplicationContext) {
+        println(applicationContext) // 자동으로 호출이 된다.. (Root WebApplicationContext, started on Sun Feb 12 23:43:21 KST 2023)
+        this.applicationContext = applicationContext // 물론 컨트롤러 생성자로도 주입이 가능하다
     }
 }

@@ -23,6 +23,9 @@ class FrontControllerApplication {
         return TomcatServletWebServerFactory()
     }
 
+    /**
+     * DispatcherServlet 은 명시적으로 Setter 를 통해서 넣어주지 않아도 ApplicationContextAware 에서 자동으로 주입해준다.
+     */
     @Bean
     fun dispatcherServlet(): DispatcherServlet {
         return DispatcherServlet()
@@ -45,7 +48,12 @@ fun main(args: Array<String>) {
 //            val serverFactory = TomcatServletWebServerFactory()
             val serverFactory = getBean(ServletWebServerFactory::class.java)
             val dispatcherServlet = getBean(DispatcherServlet::class.java)
-            dispatcherServlet.setApplicationContext(this) // ApplicationContext 를 자기자신 (AnnotationConfigWebApplicationContext 로 지정함)
+
+            /**
+             * 하지만 다음과 같이 주석처리를 해도(applicationContext를 지정하지 않아도) 제대로 동작한다.
+             * 스프링 컨테이너가 자동으로 주입을 해주는 것입니다.
+             */
+//            dispatcherServlet.setApplicationContext(this) // ApplicationContext 를 자기자신 (AnnotationConfigWebApplicationContext 로 지정함)
 
             val webServer = serverFactory.getWebServer(ServletContextInitializer {
                 it.addServlet("dispatcherServlet", dispatcherServlet).addMapping("/*")
