@@ -1,41 +1,57 @@
 package tobyspring
 
-import jakarta.servlet.http.HttpServlet
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
-import org.springframework.boot.web.servlet.ServletContextInitializer
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.web.servlet.DispatcherServlet
 
-class HellobootApplication
+@Configuration
+@ComponentScan
+class HellobootApplication {
+    @Bean
+    fun servletWebServerFactory(): ServletWebServerFactory {
+        return TomcatServletWebServerFactory()
+    }
+
+    @Bean
+    fun dispatcherServlet(): DispatcherServlet {
+        return DispatcherServlet()
+    }
+}
 
 fun main(args: Array<String>) {
-//    val tomcat = Tomcat()
-//    tomcat.start()
-
-    /**
-     * 톰캣 서블릿 웹서버를 생성하기 위한 스프링부트 도우미 클래스
-     */
-    val serverFactory = TomcatServletWebServerFactory()
-    val webServer = serverFactory.getWebServer(ServletContextInitializer {
-        it.addServlet(
-            "hello",
-            object : HttpServlet() {
-                override fun service(req: HttpServletRequest?, resp: HttpServletResponse?) {
-                    val name = req?.getParameter("name")
-
-                    resp?.status = HttpStatus.OK.value()
-                    resp?.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) // String 을 하드코딩하면 오타의 위험성이 있긴 하다.
-                    resp?.writer?.println("Hello $name")
-                }
-            }
-        ).addMapping("/hello") // 해당 매핑으로 요청이 오면 service가 동작한다.
-    })
-
-    webServer.start()
+//    run(HellobootApplication::class.java, args) // MySpringApplication 을 실행시킨다.
+    SpringApplication.run(HellobootApplication::class.java, *args) // 심플해져버린 SpringBootApplication
 }
+
+//fun main(args: Array<String>) {
+////    val tomcat = Tomcat()
+////    tomcat.start()
+//
+//    /**
+//     * 톰캣 서블릿 웹서버를 생성하기 위한 스프링부트 도우미 클래스
+//     */
+//    val serverFactory = TomcatServletWebServerFactory()
+//    val webServer = serverFactory.getWebServer(ServletContextInitializer {
+//        it.addServlet(
+//            "hello",
+//            object : HttpServlet() {
+//                override fun service(req: HttpServletRequest?, resp: HttpServletResponse?) {
+//                    val name = req?.getParameter("name")
+//
+//                    resp?.status = HttpStatus.OK.value()
+//                    resp?.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) // String 을 하드코딩하면 오타의 위험성이 있긴 하다.
+//                    resp?.writer?.println("Hello $name")
+//                }
+//            }
+//        ).addMapping("/hello") // 해당 매핑으로 요청이 오면 service가 동작한다.
+//    })
+//
+//    webServer.start()
+//}
 
 /**
  * 위 서버를 실행하면, 서블릿 컨테이너가 띄워지고, 서블릿을 직접 등록해서 동작시킬 수 있다.
