@@ -29,7 +29,10 @@ class HelloController(
     @GetMapping("/hello")
 //    @ResponseBody // 리턴하는 값이 뷰 이름이 아니고 리턴하는 타입으로 하려고 할 때
 //    @RequestMapping(value = ["/hello"], method = [RequestMethod.GET])
-    fun hello(name: String): String {
+    fun hello(name: String?): String {
+        if(name.isNullOrBlank()){
+            throw IllegalArgumentException()
+        }
         return service.sayHello(name)
     }
 
