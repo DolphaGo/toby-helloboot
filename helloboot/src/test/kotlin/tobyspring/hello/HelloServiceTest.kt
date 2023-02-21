@@ -16,4 +16,20 @@ class HelloServiceTest{
         // then
         Assertions.assertThat(response).isEqualTo("Hello DolphaGo")
     }
+
+    @Test
+    fun helloDecorator() {
+        // given
+        val decorator = HelloDecorator(object : HelloService {
+            override fun sayHello(name: String): String {
+                return "Hello $name"
+            }
+        })
+
+        // when
+        val response = decorator.sayHello("DolphaGo")
+
+        // then
+        Assertions.assertThat(response).isEqualTo("*Hello DolphaGo*")
+    }
 }
