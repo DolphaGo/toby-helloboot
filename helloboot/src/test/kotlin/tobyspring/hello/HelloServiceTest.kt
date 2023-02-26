@@ -3,9 +3,23 @@ package tobyspring.hello
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
+
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+annotation class UnitTest
+
+/**
+ * 메타 어노테이션을 여러개 합침 => Composed Annotation
+ */
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION)
+@UnitTest
+annotation class FastUnitTest
+
 class HelloServiceTest{
 
-    @Test
+    @FastUnitTest
+//    @UnitTest
     fun simpleHelloService() {
         // given
         val helloService = SimpleHelloService()
