@@ -1,4 +1,4 @@
-//package tobyspring
+package tobyspring.hello//package tobyspring
 //
 //import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 //import org.springframework.boot.web.servlet.ServletContextInitializer

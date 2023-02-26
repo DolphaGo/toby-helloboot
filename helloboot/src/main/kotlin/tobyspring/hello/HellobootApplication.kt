@@ -1,9 +1,10 @@
-package tobyspring
+package tobyspring.hello
 
 import org.springframework.boot.SpringApplication
+import tobyspring.config.MySpringBootApplication
 
 
-@MySpringBootAnnotation
+@MySpringBootApplication
 //@Configuration
 //@ComponentScan
 class HellobootApplication
