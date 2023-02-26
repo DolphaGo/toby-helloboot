@@ -1,26 +1,12 @@
 package tobyspring
 
 import org.springframework.boot.SpringApplication
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.web.servlet.DispatcherServlet
 
-@Configuration
-@ComponentScan
-class HellobootApplication {
-    @Bean
-    fun servletWebServerFactory(): ServletWebServerFactory {
-        return TomcatServletWebServerFactory()
-    }
 
-    @Bean
-    fun dispatcherServlet(): DispatcherServlet {
-        return DispatcherServlet()
-    }
-}
+@MySpringBootAnnotation
+//@Configuration
+//@ComponentScan
+class HellobootApplication
 
 fun main(args: Array<String>) {
 //    run(HellobootApplication::class.java, args) // MySpringApplication 을 실행시킨다.
