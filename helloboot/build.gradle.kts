@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
+    kotlin("plugin.jpa") version "1.7.22"
 }
 
 group = "tobyspring"
@@ -17,7 +18,13 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") // ./gradlew dependencies --configuration compileClasspath
-    implementation("org.springframework.boot:spring-boot-starter-jetty") // jetty 추가
+    implementation("org.springframework.boot:spring-boot-starter-jetty") {
+        version {
+            prefer("2.6.4")
+        }
+
+    }
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
