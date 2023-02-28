@@ -17,13 +17,13 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web") // ./gradlew dependencies --configuration compileClasspath
-    implementation("org.springframework.boot:spring-boot-starter-jetty") {
-        version {
-            prefer("2.6.4")
-        }
-
+//    ./gradlew dependencies --configuration compileClasspath
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
+//    implementation("org.springframework.boot:spring-boot-starter-jetty") {
+//        version { prefer("2.6.4") }
+//    }
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

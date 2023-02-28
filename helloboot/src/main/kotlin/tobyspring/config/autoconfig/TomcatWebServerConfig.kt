@@ -5,13 +5,15 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
-import org.springframework.context.annotation.Conditional
 import org.springframework.core.type.AnnotatedTypeMetadata
+import org.springframework.util.ClassUtils
+import tobyspring.config.ConditionalMyOnClass
 import tobyspring.config.MyAutoConfiguration
 
 //@Configuration
 @MyAutoConfiguration
-@Conditional(TomcatCondition::class)
+//@Conditional(TomcatCondition::class)
+@ConditionalMyOnClass("org.apache.catalina.startup.Tomcat")
 class TomcatWebServerConfig {
 
     @Bean("tomcatWebServerFactory")
@@ -21,8 +23,9 @@ class TomcatWebServerConfig {
 
 }
 
-class TomcatCondition : Condition{
+class TomcatCondition : Condition {
     override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean {
-        return false
+        // Tomcat 이 있으면, True, 없으면 False
+        return ClassUtils.isPresent("org.apache.catalina.startup.Tomcat", context.classLoader)
     }
 }
