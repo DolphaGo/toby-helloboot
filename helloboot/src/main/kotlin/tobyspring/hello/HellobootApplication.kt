@@ -3,14 +3,22 @@ package tobyspring.hello
 import org.springframework.boot.SpringApplication
 import tobyspring.config.MySpringBootApplication
 
-
-@MySpringBootApplication
 //@Configuration
 //@ComponentScan
-class HellobootApplication
+@MySpringBootApplication
+class HellobootApplication {
+
+//    @Bean
+//    fun applicationRunner(env: Environment): ApplicationRunner {
+//        return ApplicationRunner {
+//            val name = env.getProperty("my.name") // 환경변수가 properties file 보다 우선순위가 높다.
+//            // 또한 환경변수보다 시스템 옵션(-Dmy.name=AlphaGo 가 우선순위가 더 높다.
+//            println("my.name: $name")
+//        }
+//    }
+}
 
 fun main(args: Array<String>) {
-//    run(HellobootApplication::class.java, args) // MySpringApplication 을 실행시킨다.
     SpringApplication.run(HellobootApplication::class.java, *args) // 심플해져버린 SpringBootApplication
 }
 

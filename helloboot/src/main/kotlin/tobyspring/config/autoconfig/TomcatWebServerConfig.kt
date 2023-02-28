@@ -6,6 +6,7 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
+import org.springframework.core.env.Environment
 import org.springframework.core.type.AnnotatedTypeMetadata
 import org.springframework.util.ClassUtils
 import tobyspring.config.ConditionalMyOnClass
@@ -24,8 +25,10 @@ class TomcatWebServerConfig {
 
     @Bean("tomcatWebServerFactory")
     @ConditionalOnMissingBean
-    fun servletWebServerFactory(): ServletWebServerFactory {
-        return TomcatServletWebServerFactory()
+    fun servletWebServerFactory(env: Environment): ServletWebServerFactory {
+        val factory = TomcatServletWebServerFactory()
+        factory.contextPath = env.getProperty("contextPath")
+        return factory
     }
 
 }
