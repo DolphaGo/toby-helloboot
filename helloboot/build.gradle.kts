@@ -41,3 +41,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+noArg {
+    annotation("org.springframework.stereotype.Component")
+}

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ConditionContext
 import org.springframework.core.type.AnnotatedTypeMetadata
 import org.springframework.util.ClassUtils
 import tobyspring.config.ConditionalMyOnClass
+import tobyspring.config.EnableMyConfigurationProperties
 import tobyspring.config.MyAutoConfiguration
 
 /**
@@ -20,6 +21,8 @@ import tobyspring.config.MyAutoConfiguration
 @MyAutoConfiguration
 //@Conditional(TomcatCondition::class)
 @ConditionalMyOnClass("org.apache.catalina.startup.Tomcat")
+//@Import(ServerProperties::class)
+@EnableMyConfigurationProperties(ServerProperties::class)
 class TomcatWebServerConfig(
     /**
      * 주석
@@ -35,7 +38,10 @@ class TomcatWebServerConfig(
     ): ServletWebServerFactory {
         // env로부터 가져오는 방법도 있다 -> factory.contextPath = env.getProperty("contextPath")
 //        return TomcatServletWebServerFactory(contextPath, port)
-        return TomcatServletWebServerFactory(serverProperties.contextPath, serverProperties.port)
+        return TomcatServletWebServerFactory().apply {
+            this.contextPath = serverProperties.contextPath
+            this.port = serverProperties.port ?: 8080
+        }
     }
 
 }

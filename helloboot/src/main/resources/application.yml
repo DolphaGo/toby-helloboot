@@ -1,5 +1,6 @@
 #my:
 #  name: DolphaGo
 
-contextPath:
-port: 8082
+server:
+  contextPath: /app
+  port: 8082
