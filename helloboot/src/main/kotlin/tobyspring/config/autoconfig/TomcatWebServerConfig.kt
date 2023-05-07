@@ -1,6 +1,5 @@
 package tobyspring.config.autoconfig
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory
@@ -22,18 +21,21 @@ import tobyspring.config.MyAutoConfiguration
 //@Conditional(TomcatCondition::class)
 @ConditionalMyOnClass("org.apache.catalina.startup.Tomcat")
 class TomcatWebServerConfig(
-    @Value("\${contextPath}") val contextPath: String
+    /**
+     * 주석
+     * @Value("\${contextPath:}") val contextPath: String,
+     * @Value("\${port:8080}") val port: Int // port라는 프로퍼티가 없으면 에러가 납니다. : 로 디폴트 값을 지정해줍시다.
+     */
 ) {
-
     @Bean("tomcatWebServerFactory")
     @ConditionalOnMissingBean
     fun servletWebServerFactory(
 //        env: Environment
+        serverProperties: ServerProperties
     ): ServletWebServerFactory {
-        val factory = TomcatServletWebServerFactory()
-//        factory.contextPath = env.getProperty("contextPath")
-        factory.contextPath = contextPath
-        return factory
+        // env로부터 가져오는 방법도 있다 -> factory.contextPath = env.getProperty("contextPath")
+//        return TomcatServletWebServerFactory(contextPath, port)
+        return TomcatServletWebServerFactory(serverProperties.contextPath, serverProperties.port)
     }
 
 }
